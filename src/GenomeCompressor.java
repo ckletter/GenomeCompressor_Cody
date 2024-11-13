@@ -18,15 +18,24 @@
  *  @author Zach Blick
  */
 public class GenomeCompressor {
-
+    public final static int BITS_PER_CHAR = 2;
     /**
      * Reads a sequence of 8-bit extended ASCII characters over the alphabet
      * { A, C, T, G } from standard input; compresses and writes the results to standard output.
      */
     public static void compress() {
-
+        int[] letterMap = new int['T' + 1];
+        letterMap['A'] = 0;
+        letterMap['C'] = 1;
+        letterMap['G'] = 2;
+        letterMap['T'] = 3;
         // TODO: complete the compress() method
-
+        String genome = BinaryStdIn.readString();
+        int length = genome.length();
+        for (int i = 0; i < length; i++) {
+            int num = letterMap[genome.charAt(i)];
+            BinaryStdOut.write(num, BITS_PER_CHAR);
+        }
         BinaryStdOut.close();
     }
 
@@ -34,9 +43,16 @@ public class GenomeCompressor {
      * Reads a binary sequence from standard input; expands and writes the results to standard output.
      */
     public static void expand() {
-
-        // TODO: complete the expand() method
-
+        char[] letterMap = new char[4];
+        letterMap[0] = 'A';
+        letterMap[1] = 'C';
+        letterMap[2] = 'G';
+        letterMap[3] = 'T';
+        while (!BinaryStdIn.isEmpty()) {
+            int num = BinaryStdIn.readInt(BITS_PER_CHAR);
+            char letter = letterMap[num];
+            BinaryStdOut.write(letter);
+        }
         BinaryStdOut.close();
     }
 
