@@ -19,21 +19,31 @@
  */
 public class GenomeCompressor {
     public final static int BITS_PER_CHAR = 2;
+    public final static int A_BIT = 0;
+    public final static int C_BIT = 1;
+    public final static int G_BIT = 2;
+    public final static int T_BIT = 3;
     /**
      * Reads a sequence of 8-bit extended ASCII characters over the alphabet
      * { A, C, T, G } from standard input; compresses and writes the results to standard output.
      */
     public static void compress() {
+        // Create int array to map each char to corresponding 2-bit value
         int[] letterMap = new int['T' + 1];
-        letterMap['A'] = 0;
-        letterMap['C'] = 1;
-        letterMap['G'] = 2;
-        letterMap['T'] = 3;
-        // TODO: complete the compress() method
+        letterMap['A'] = A_BIT;
+        letterMap['C'] = C_BIT;
+        letterMap['G'] = G_BIT;
+        letterMap['T'] = T_BIT;
+        // Read DNA sequence
         String genome = BinaryStdIn.readString();
         int length = genome.length();
+        // Add file header to binary file
+        BinaryStdOut.write(length * 2);
+        // Loop through each nucleotide
         for (int i = 0; i < length; i++) {
+            // Find the number corresponding to the current nucleotide to the binary file
             int num = letterMap[genome.charAt(i)];
+            // Write the binary value of that number to the binary file
             BinaryStdOut.write(num, BITS_PER_CHAR);
         }
         BinaryStdOut.close();
@@ -43,15 +53,24 @@ public class GenomeCompressor {
      * Reads a binary sequence from standard input; expands and writes the results to standard output.
      */
     public static void expand() {
+        // Create new char array to map each number 0-3 to corresponding nucleotide
         char[] letterMap = new char[4];
         letterMap[0] = 'A';
         letterMap[1] = 'C';
         letterMap[2] = 'G';
         letterMap[3] = 'T';
-        while (!BinaryStdIn.isEmpty()) {
+        // Read file header, size of data
+        int length = BinaryStdIn.readInt();
+        int i = 0;
+        // Keep looping until we read entire contents of our own data
+        while (i < length) {
+            // Read the next two bits as an int
             int num = BinaryStdIn.readInt(BITS_PER_CHAR);
+            // Find the corresponding nucleotide for that bit
             char letter = letterMap[num];
+            // Write out that nucleotide to our expanded file
             BinaryStdOut.write(letter);
+            i+=2;
         }
         BinaryStdOut.close();
     }
