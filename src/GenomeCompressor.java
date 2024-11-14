@@ -23,13 +23,14 @@ public class GenomeCompressor {
     public final static int C_BIT = 1;
     public final static int G_BIT = 2;
     public final static int T_BIT = 3;
+    public static int[] letterMap = new int['T' + 1];
+    public static char[] bitMap = new char[4];
     /**
      * Reads a sequence of 8-bit extended ASCII characters over the alphabet
      * { A, C, T, G } from standard input; compresses and writes the results to standard output.
      */
     public static void compress() {
         // Create int array to map each char to corresponding 2-bit value
-        int[] letterMap = new int['T' + 1];
         letterMap['A'] = A_BIT;
         letterMap['C'] = C_BIT;
         letterMap['G'] = G_BIT;
@@ -54,11 +55,10 @@ public class GenomeCompressor {
      */
     public static void expand() {
         // Create new char array to map each number 0-3 to corresponding nucleotide
-        char[] letterMap = new char[4];
-        letterMap[0] = 'A';
-        letterMap[1] = 'C';
-        letterMap[2] = 'G';
-        letterMap[3] = 'T';
+        bitMap[0] = 'A';
+        bitMap[1] = 'C';
+        bitMap[2] = 'G';
+        bitMap[3] = 'T';
         // Read file header, size of data
         int length = BinaryStdIn.readInt();
         int i = 0;
@@ -67,7 +67,7 @@ public class GenomeCompressor {
             // Read the next two bits as an int
             int num = BinaryStdIn.readInt(BITS_PER_CHAR);
             // Find the corresponding nucleotide for that bit
-            char letter = letterMap[num];
+            char letter = bitMap[num];
             // Write out that nucleotide to our expanded file
             BinaryStdOut.write(letter);
             i+=2;
